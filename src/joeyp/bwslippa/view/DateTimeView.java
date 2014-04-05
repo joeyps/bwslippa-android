@@ -1,11 +1,11 @@
-package joeyp.bwslippa2.view;
+package joeyp.bwslippa.view;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import joeyp.bwslippa2.R;
+import joeyp.bwslippa.R;
 import android.content.Context;
 import android.provider.Settings;
 import android.text.TextUtils;

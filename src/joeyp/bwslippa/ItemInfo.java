@@ -1,4 +1,4 @@
-package joeyp.bwslippa2;
+package joeyp.bwslippa;
 
 import org.json.JSONException;
 import org.json.JSONObject;

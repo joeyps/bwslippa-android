@@ -1,4 +1,4 @@
-package joeyp.bwslippa2;
+package joeyp.bwslippa;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -10,9 +10,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import joeyp.bwslippa2.ItemManager.OnItemDataChangedListener;
-import joeyp.bwslippa2.RPCHelper.RPCCallback;
-import joeyp.bwslippa2.view.CalendarDialog.OnDateChangedListener;
+import joeyp.bwslippa.ItemManager.OnItemDataChangedListener;
+import joeyp.bwslippa.RPCHelper.RPCCallback;
+import joeyp.bwslippa.view.CalendarDialog.OnDateChangedListener;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;

@@ -1,4 +1,4 @@
-package joeyp.bwslippa2;
+package joeyp.bwslippa;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,11 +7,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import joeyp.bwslippa2.ItemManager.OnItemDataChangedListener;
-import joeyp.bwslippa2.RPCHelper.RPCCallback;
-import joeyp.bwslippa2.RPCHelper.RPCListener;
-import joeyp.bwslippa2.view.CalendarDialog;
-import joeyp.bwslippa2.view.MessageDialog;
+import joeyp.bwslippa.ItemManager.OnItemDataChangedListener;
+import joeyp.bwslippa.RPCHelper.RPCCallback;
+import joeyp.bwslippa.RPCHelper.RPCListener;
+import joeyp.bwslippa.view.CalendarDialog;
+import joeyp.bwslippa.view.MessageDialog;
 
 import org.json.JSONArray;
 import org.json.JSONException;

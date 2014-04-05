@@ -1,6 +1,6 @@
-package joeyp.bwslippa2.view;
+package joeyp.bwslippa.view;
 
-import joeyp.bwslippa2.R;
+import joeyp.bwslippa.R;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;

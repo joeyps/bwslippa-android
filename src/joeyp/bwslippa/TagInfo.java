@@ -1,18 +1,17 @@
-package joeyp.bwslippa2;
+package joeyp.bwslippa;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class CustomerInfo extends DBInfo {
-	
+public class TagInfo extends DBInfo {
+
 	public String name;
-	public String phone;
 	
-	private CustomerInfo() {
+	private TagInfo() {
 		
 	}
 	
-	private CustomerInfo(JSONObject obj) {
+	private TagInfo(JSONObject obj) {
 		unmarshal(obj);
 	}
 
@@ -21,13 +20,12 @@ public class CustomerInfo extends DBInfo {
 		super.unmarshal(obj);
 		try {
 			name = obj.getString("name");
-			phone = obj.getString("phone");
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public static CustomerInfo parse(JSONObject obj) {
-		return new CustomerInfo(obj);
+	public static TagInfo parse(JSONObject obj) {
+		return new TagInfo(obj);
 	}
 }

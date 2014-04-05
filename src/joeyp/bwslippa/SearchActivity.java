@@ -1,4 +1,4 @@
-package joeyp.bwslippa2;
+package joeyp.bwslippa;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,8 +9,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import joeyp.bwslippa2.Alarm.OnAlarmListener;
-import joeyp.bwslippa2.RPCHelper.RPCCallback;
+import joeyp.bwslippa.Alarm.OnAlarmListener;
+import joeyp.bwslippa.RPCHelper.RPCCallback;
 
 import android.app.Activity;
 import android.content.Context;

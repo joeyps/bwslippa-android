@@ -1,4 +1,4 @@
-package joeyp.bwslippa2;
+package joeyp.bwslippa;
 
 import android.app.Activity;
 import android.content.ComponentName;

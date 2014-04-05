@@ -1,8 +1,8 @@
-package joeyp.bwslippa2;
+package joeyp.bwslippa;
 
 import java.io.IOException;
 
-import joeyp.bwslippa2.RPCHelper.RPCListener;
+import joeyp.bwslippa.RPCHelper.RPCListener;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;

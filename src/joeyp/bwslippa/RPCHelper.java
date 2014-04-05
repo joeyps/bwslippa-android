@@ -1,4 +1,4 @@
-package joeyp.bwslippa2;
+package joeyp.bwslippa;
 
 import java.io.BufferedReader;
 import java.io.IOException;

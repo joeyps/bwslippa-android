@@ -3,3 +3,5 @@
 /build.gradle
 /proguard-project.txt
 /project.properties
+/.project
+/.classpath

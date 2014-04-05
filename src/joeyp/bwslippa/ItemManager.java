@@ -1,4 +1,4 @@
-package joeyp.bwslippa2;
+package joeyp.bwslippa;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import joeyp.bwslippa2.RPCHelper.RPCCallback;
+import joeyp.bwslippa.RPCHelper.RPCCallback;
 
 import org.json.JSONArray;
 import org.json.JSONException;
