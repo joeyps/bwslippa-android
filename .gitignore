@@ -1,0 +1,5 @@
+/bin/*
+/gen/*
+/build.gradle
+/proguard-project.txt
+/project.properties

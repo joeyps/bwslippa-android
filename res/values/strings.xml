@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">bwslippa</string>
+    <string-array name="drawer_items">
+        <item>All</item>
+        <item>Available</item>
+    </string-array>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <string name="action_websearch">Web search</string>
+    <string name="app_not_available">Sorry, there\'s no web browser available</string>
+    
+    <!-- Welcome page -->
+    <string name="welcome_description">Always believe</string>
+    <string name="welcome_button_start">Get started</string>
+    <!-- SignIn -->
+    <string name="select_account">Select account to sign in</string>
+    <string name="account_not_found">Can not find account?</string>
+    <!-- Dialog -->
+    <string name="permission_denied">This App is in bata stage, only open for specific user.</string>
+    
+    <!-- Common -->
+    <string name="close">Close</string>
+    <string name="reserve">Reserve</string>
+    <string name="cancel">Cancel</string>
+    <string name="send">Send</string>
+    <!-- tag  -->
+    <string name="tag_all">All</string>
+    <string name="tag_reserved">Reserved</string>
+    <string name="tag_available">Available</string>
+    <!-- Booking  -->
+    <string name="booking_detail">Reservation Detail</string>
+    <string name="reserve_item">Reserve %s</string>
+    <string name="check_in">Check in</string>
+    <string name="check_out">Check out</string>
+    <string name="how_many_person">%d Person</string>
+    <!-- info  -->
+    <string name="customer_name">Name</string>
+    <string name="customer_phone">Phone</string>
+    <!-- search -->
+    <string name="hint_name_n_phone">Name or Phone</string>
+</resources>

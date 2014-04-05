@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#f4f4f4" >
+    <TextView 
+		    android:id="@+id/text_item_name"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:padding="@dimen/m1"
+		    android:background="@color/secondary_color"
+		    android:textColor="@color/text_dark"
+		    android:textSize="40dp"
+		    android:text="item name"/>
+    <LinearLayout 
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:orientation="vertical"
+	    android:layout_weight="1"
+	    android:padding="@dimen/m1">
+		
+		<LinearLayout 
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:orientation="horizontal"
+		    android:background="@drawable/bg_form_input"
+		    android:layout_marginBottom="@dimen/m1">
+			<joeyp.bwslippa2.view.DateTimeView
+			    android:id="@+id/date_start"
+			    android:layout_width="match_parent"
+		    	android:layout_height="wrap_content"
+		    	android:layout_weight="1">
+			    
+			</joeyp.bwslippa2.view.DateTimeView>  
+			<joeyp.bwslippa2.view.DateTimeView
+			    android:id="@+id/date_end"
+			    android:layout_width="match_parent"
+		    	android:layout_height="wrap_content"
+		    	android:layout_weight="1">
+			    
+			</joeyp.bwslippa2.view.DateTimeView>
+		</LinearLayout>
+		<LinearLayout 
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:orientation="horizontal"
+		    android:background="@drawable/bg_form_input"
+		    android:layout_marginBottom="@dimen/m1">
+			<Button
+			    android:id="@+id/button_decrease"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:text="-" />
+			<TextView 
+			    android:id="@+id/text_person_count"
+			    android:layout_width="0dip"
+			    android:layout_height="wrap_content"
+			    android:layout_weight="1"
+			    android:gravity="center"
+			    android:text="1 person"/>
+			<Button 
+			    android:id="@+id/button_increase"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:text="+"/>
+		</LinearLayout>
+		<LinearLayout 
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:orientation="horizontal"
+		    android:background="@drawable/bg_form_input"
+		    android:layout_marginBottom="@dimen/m1">
+			<TextView
+			    android:id="@+id/text_customer_name"
+			    android:layout_width="0dip"
+			    android:layout_height="wrap_content"
+			    android:textSize="30dp"
+			    android:text="@string/customer_name"
+			    android:layout_weight="1" />
+			<ImageButton 
+			    android:id="@+id/button_find_customer"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:src="@drawable/ic_action_add_person"/>
+		</LinearLayout>
+		<EditText
+		    android:id="@+id/text_customer_phone"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:background="@drawable/bg_form_input"
+		    android:textSize="30dp"
+		    android:hint="@string/customer_phone" />
+	</LinearLayout>
+	<LinearLayout 
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:orientation="horizontal">
+		<Button
+		    android:id="@+id/button_cancel"
+		    android:layout_width="match_parent"
+	    	android:layout_height="wrap_content"
+	    	android:layout_weight="1"
+	    	android:text="@string/cancel">
+		    
+		</Button>
+		<Button
+		    android:id="@+id/button_send"
+		    android:layout_width="match_parent"
+	    	android:layout_height="wrap_content"
+	    	android:layout_weight="1"
+	    	android:text="@string/send">
+		    
+		</Button>
+	</LinearLayout>
+</LinearLayout>

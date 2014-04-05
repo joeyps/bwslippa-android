@@ -1,0 +1,9 @@
+<resources>
+    <!-- <color name="main_color">#d4490b</color> -->
+    <color name="main_color">#7bc8aa</color>
+    <color name="secondary_color">#6BB0BF</color>
+    <color name="highlight_color">#F2B441</color>
+    <color name="text_light">#2b2d2e</color>
+    <color name="text_dark">#ffffffff</color>
+    <color name="text_secondary_light">#afb1b3</color>
+</resources>

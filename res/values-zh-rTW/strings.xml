@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">bwslippa</string>
+    <string-array name="planets_array">
+        <item>Mercury</item>
+        <item>Venus</item>
+        <item>Earth</item>
+        <item>Mars</item>
+        <item>Jupiter</item>
+        <item>Saturn</item>
+        <item>Uranus</item>
+        <item>Neptune</item>
+    </string-array>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <string name="action_websearch">Web search</string>
+    <string name="app_not_available">Sorry, there\'s no web browser available</string>
+    <!-- Welcome page -->
+    <string name="welcome_description">隨時隨地掌握店內最新動態。</string>
+    <string name="welcome_button_start">開始使用</string>
+    <!-- SignIn -->
+    <string name="select_account">選擇帳號登入</string>
+    <string name="account_not_found">找不到你的帳號嗎?</string>
+    <!-- Dialog -->
+    <string name="permission_denied">目前為測試階段，只開放特定帳戶使用，請嘗試其他帳戶</string>
+    
+    <!-- Common -->
+    <string name="close">關閉</string>
+    <string name="reserve">預約</string>
+    <string name="cancel">取消</string>
+    <string name="send">送出</string>
+    <!-- tag  -->
+    <string name="tag_all">全部</string>
+    <string name="tag_reserved">已預約</string>
+    <string name="tag_available">可預約</string>
+    <!-- Booking  -->
+    <string name="booking_detail">預約詳情</string>
+    <string name="reserve_item">預約 %s</string>
+    <string name="check_in">從</string>
+    <string name="check_out">到</string>
+    <string name="how_many_person">%d 位客人</string>
+    <!-- info  -->
+    <string name="customer_name">姓名</string>
+    <string name="customer_phone">聯絡電話</string>
+    <!-- search -->
+    <string name="hint_name_n_phone">搜尋姓名或電話</string>
+</resources>
