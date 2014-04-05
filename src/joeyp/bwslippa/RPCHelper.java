@@ -204,12 +204,23 @@ public class RPCHelper {
 	}
 	
 	public void init(String token) {
-		new GetCookieTask().execute(token);
+		mWorker.post(new GetCookieTask(token));
 	}
 	
 	public void registerListenter(RPCListener listener) {
 		if(!mListener.contains(listener))
 			mListener.add(new WeakReference<RPCListener>(listener));
+	}
+	
+	public void unregisterListenter(RPCListener listener) {
+		WeakReference<RPCListener> refToRemove = null;
+		for(WeakReference<RPCListener> ref : mListener) {
+			RPCListener l = ref.get();
+			if(l != null && l.equals(listener))
+				refToRemove = ref;
+		}
+		if(refToRemove != null)
+			mListener.remove(refToRemove);
 	}
 	
 	public void call() {
@@ -285,61 +296,79 @@ public class RPCHelper {
 		
 	}
 	
-	private class GetCookieTask extends AsyncTask<String, Integer, Boolean> {
-        protected Boolean doInBackground(String... tokens) {
-                try {
-                        // Don't follow redirects
-                	sHttpClient.getParams().setBooleanParameter(ClientPNames.HANDLE_REDIRECTS, false);
-                    String url = String.format("%s_ah/login?continue=http://localhost/&auth=%s", HOST, tokens[0]);
-                    HttpGet http_get = new HttpGet(url);
-                    HttpResponse response;
-                    response = sHttpClient.execute(http_get);
-                    if(response.getStatusLine().getStatusCode() != 302)
-	                    // Response should be a redirect
-	                    return false;
-                        
-                    //FIXME Invalid use of SingleClientConnManager: connection still allocated.
-                    String content = EntityUtils.toString(response.getEntity());
-//                        InputStream is = response.getEntity().getContent();
-//                        
-//                        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-//                        String line = null;
-//                        while ((line = reader.readLine()) != null) {
-//                        	//Log.d("joey", "auth=" + line);
-//                        }
-//                        is.close();
-//                        reader.close();
-                    Header[] headers = response.getHeaders("Set-Cookie");
-                    for(Cookie cookie : sHttpClient.getCookieStore().getCookies()) {
-                    	Log.d("joey", "cookie=" + cookie.getName() + " value=" + cookie.getValue());
-                        if(cookie.getName().equals("ACSID") || cookie.getName().equals("SACSID")) {
-                                return true;
-                        }
-                    }
-                } catch (ClientProtocolException e) {
-                        e.printStackTrace();
-                } catch (IOException e) {
-                        e.printStackTrace();
-                } finally {
-                	sHttpClient.getParams().setBooleanParameter(ClientPNames.HANDLE_REDIRECTS, true);
-                }
-                return false;
-        }
-        
-        protected void onPostExecute(Boolean result) {
-        	//FIXME
-        	if(result) {
-        		for(WeakReference<RPCListener> l : mListener) {
-        			RPCListener listener = l.get();
-        			if(listener != null)
-        				listener.onInit();
-        		}
-        	} else {
-        		//unauthorized
-        		onFailed(401);
-        	}
-        	
-        }
+	private class GetCookieTask implements Runnable {
+		
+		private String mToken;
+		
+		GetCookieTask(String token) {
+			mToken = token;
+		}
+
+		@Override
+		public void run() {
+			try {
+                // Don't follow redirects
+	        	sHttpClient.getParams().setBooleanParameter(ClientPNames.HANDLE_REDIRECTS, false);
+	            String url = String.format("%s_ah/login?continue=http://localhost/&auth=%s", HOST, mToken);
+	            HttpGet http_get = new HttpGet(url);
+	            HttpResponse response;
+	            response = sHttpClient.execute(http_get);
+	            if(response.getStatusLine().getStatusCode() != 302) {
+	            	UIHandler.get().post(new Runnable() {
+
+	    				@Override
+	    				public void run() {
+	    					onFailed(0);
+	    				}
+	    	        	
+	    	        });
+	            }
+	                
+	            //FIXME Invalid use of SingleClientConnManager: connection still allocated.
+	            String content = EntityUtils.toString(response.getEntity());
+	//                InputStream is = response.getEntity().getContent();
+	//                
+	//                BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+	//                String line = null;
+	//                while ((line = reader.readLine()) != null) {
+	//                	//Log.d("joey", "auth=" + line);
+	//                }
+	//                is.close();
+	//                reader.close();
+	            Header[] headers = response.getHeaders("Set-Cookie");
+	            for(Cookie cookie : sHttpClient.getCookieStore().getCookies()) {
+	                if(cookie.getName().equals("ACSID") || cookie.getName().equals("SACSID")) {
+	                	UIHandler.get().post(new Runnable() {
+
+	        				@Override
+	        				public void run() {
+	        					for(WeakReference<RPCListener> l : mListener) {
+	        	        			RPCListener listener = l.get();
+	        	        			if(listener != null)
+	        	        				listener.onInit();
+	        	        		}
+	        				}
+	        	        	
+	        	        });
+	                	return;
+	                }
+	            }
+	        } catch (ClientProtocolException e) {
+	                e.printStackTrace();
+	        } catch (IOException e) {
+	                e.printStackTrace();
+	        } finally {
+	        	sHttpClient.getParams().setBooleanParameter(ClientPNames.HANDLE_REDIRECTS, true);
+	        }
+	        UIHandler.get().post(new Runnable() {
+
+				@Override
+				public void run() {
+					onFailed(401);
+				}
+	        	
+	        });
+		}
 
     }
 	

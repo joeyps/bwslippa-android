@@ -56,7 +56,6 @@ public class ItemManager {
 	}
 	
 	public void registerListener(final OnItemDataChangedListener listener) {
-		Log.d("joey", "registerListener thread id=" + Thread.currentThread().getId());
 		mListeners.add(listener);
 		final List<ItemDetail> items = new ArrayList<ItemDetail>(mItems);
 		mHandler.post(new Runnable() {
@@ -67,7 +66,6 @@ public class ItemManager {
 			}
 			
 		});
-		Log.d("joey", "-registerListener thread id=" + Thread.currentThread().getId());
 	}
 	
 	public void setFilter(ItemFilter filter) {
@@ -148,7 +146,6 @@ public class ItemManager {
 					});
 					
 				} catch (JSONException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -166,6 +163,10 @@ public class ItemManager {
 			}
         	
         });
+	}
+	
+	public void forceSync() {
+		init();
 	}
 	
 	public void notifyDataUpdated() {

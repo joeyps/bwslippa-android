@@ -59,6 +59,8 @@ public class StoreFragment extends Fragment implements
         mAdapter = new ItemAdapter(getActivity());
         mList.setAdapter(mAdapter);
         
+        ItemManager im = ItemManager.getInstance();
+        im.registerListener(this);
         return rootView;
     }
 	

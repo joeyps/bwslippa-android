@@ -22,6 +22,10 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.accounts.AccountManagerFuture;
+import android.accounts.AuthenticatorException;
+import android.accounts.OperationCanceledException;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.ActionBar.OnNavigationListener;
@@ -37,6 +41,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
@@ -68,6 +73,10 @@ public class BWSlippa extends Activity implements OnItemDataChangedListener,
 	
 	public static final String TAG = BWSlippa.class.getSimpleName();
 	
+	public static final String PREFS_SETTINGS = "settings";
+	public static final String KEY_PRIMARY_ACCOUNT = "primary_account";
+	
+	public static final String EXTRA_ACCOUNT = "extra_account";
 	//reserve
 	public static final String EXTRA_CUSTOMER_NAME = "extra_customer_name";
 	public static final String EXTRA_CUSTOMER_KEY = "extra_customer_key";
@@ -102,6 +111,56 @@ public class BWSlippa extends Activity implements OnItemDataChangedListener,
     
     private List<TagInfo> mTags;
     
+    private class AuthTask implements Runnable {
+		
+		Account mAccount;
+		AccountManager mAccountManager;
+		
+		AuthTask(AccountManager manager, Account account) {
+			mAccountManager = manager;
+			mAccount = account;
+		}
+		
+		public void run() {
+			AccountManagerFuture<Bundle> amf = mAccountManager.getAuthToken(mAccount, "ah", null, false, null, null);
+			try {
+				Bundle bundle = amf.getResult();
+				Intent intent = (Intent)bundle.get(AccountManager.KEY_INTENT);
+				if(intent != null) {
+                    //permission required
+					onInitFailed(-1);
+					startActivity(intent);
+					return;
+				}
+				String temp_token = bundle.getString(AccountManager.KEY_AUTHTOKEN);
+				//avoid token expired, invalidate latest token first
+				mAccountManager.invalidateAuthToken(mAccount.type, temp_token);
+				//get token again
+				amf = mAccountManager.getAuthToken(mAccount, "ah", null, false, null, null);
+				bundle = amf.getResult();
+				final String auth_token = bundle.getString(AccountManager.KEY_AUTHTOKEN);
+				
+				runOnUiThread(new Runnable() {
+					
+					@Override
+					public void run() {
+						onGetToken(auth_token);
+					}
+				});
+		        
+			} catch (OperationCanceledException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (AuthenticatorException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -109,6 +168,20 @@ public class BWSlippa extends Activity implements OnItemDataChangedListener,
 		
 		RPCHelper rpc = RPCHelper.getInstance();
 		rpc.registerListenter(this);
+		
+		Bundle bundle = getIntent().getExtras();
+		if(bundle != null) {
+			Log.d("joey", "select account");
+			Account account = bundle.getParcelable(EXTRA_ACCOUNT);
+			if(account != null) {
+				AccountManager accountManager = AccountManager.get(getApplicationContext());
+				Worker.get().post(new AuthTask(accountManager, account));
+				setPrimaryAccount(this, account);
+			}
+		} else {
+			Log.d("joey", "load default account");
+			loadDefaultAccount();
+		}
 		
 		// Check device for Play Services APK.
 	    if (checkPlayServices()) {
@@ -195,6 +268,13 @@ public class BWSlippa extends Activity implements OnItemDataChangedListener,
 	}
 	
     @Override
+	protected void onDestroy() {
+		super.onDestroy();
+		RPCHelper rpc = RPCHelper.getInstance();
+		rpc.unregisterListenter(this);
+	}
+
+	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main, menu);
@@ -268,18 +348,20 @@ public class BWSlippa extends Activity implements OnItemDataChangedListener,
         mDrawerLayout.closeDrawer(mDrawerList);
     }
     
+    private void onGetToken(String token) {
+    	RPCHelper helper = RPCHelper.getInstance();
+        helper.init(token);
+    }
+    
     private void loadFragment() {
     	// update the main content by replacing fragments
-    	StoreFragment fragment = new StoreFragment();
+    	Fragment fragment = new StoreFragment();
 //        Bundle args = new Bundle();
 //        args.putInt(PlanetFragment.ARG_PLANET_NUMBER, position);
 //        fragment.setArguments(args);
 
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-        
-        ItemManager im = ItemManager.getInstance();
-        im.registerListener(fragment);
     }
 
     @Override
@@ -525,9 +607,21 @@ public class BWSlippa extends Activity implements OnItemDataChangedListener,
 
 	@Override
 	public void onInit() {
-		// TODO Auto-generated method stub
-		
+		Toast.makeText(this, "Welcome.", Toast.LENGTH_SHORT).show();
+		ItemManager.getInstance().forceSync();
 	}
+
+//	@Override
+//	public void onInitFailed(int errorCode) {
+//		runOnUiThread(new Runnable() {
+//			
+//			@Override
+//			public void run() {
+//				mLoadingView.setVisibility(View.GONE);
+//			}
+//		});
+//		
+//	}
 
 	@Override
 	public void onInitFailed(int errorCode) {
@@ -599,5 +693,38 @@ public class BWSlippa extends Activity implements OnItemDataChangedListener,
 			return tv;
 		}
 		
+	}
+	
+	private void loadDefaultAccount() {
+		String accountName = getPrimaryAccountName(this);
+		if(accountName != null) {
+			AccountManager accountManager = AccountManager.get(getApplicationContext());
+			final Account[] accounts = accountManager.getAccountsByType("com.google");
+			for(Account account : accounts) {
+				if(account.name.equals(accountName)) {
+					Worker.get().post(new AuthTask(accountManager, account));
+					return;
+				}
+			}
+		}
+		
+		Log.i(TAG, "account not exists");
+		//acount not exists
+		Intent intent = new Intent();
+		intent.setClass(this, SignInActivity.class);
+		startActivity(intent);
+		finish();
+	}
+	
+	public static void setPrimaryAccount(Context context, Account account) {
+		SharedPreferences settings = context.getSharedPreferences(PREFS_SETTINGS, Context.MODE_PRIVATE);
+		Editor editor = settings.edit();
+		editor.putString(KEY_PRIMARY_ACCOUNT, account.name);
+		editor.apply();
+	}
+	
+	public static String getPrimaryAccountName(Context context) {
+		SharedPreferences settings = context.getSharedPreferences(PREFS_SETTINGS, Context.MODE_PRIVATE);
+		return settings.getString(KEY_PRIMARY_ACCOUNT, null);
 	}
 }
