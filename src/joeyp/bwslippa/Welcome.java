@@ -35,13 +35,14 @@ public class Welcome extends Activity {
 			}
 		});
         
-//        btnLogout.setOnClickListener(new OnClickListener() {
-//			
-//			@Override
-//			public void onClick(View v) {
-//				new AuthenticatedRequestTask().execute("https://bwslippa.appspot.com/_ah/login?action=logout");
-//			}
-//		});
+        String accountName = BWSlippa.getPrimaryAccountName(this);
+        if(accountName != null) {
+        	Intent intent = new Intent();
+			intent.setClass(this, BWSlippa.class);
+			startActivity(intent);
+			finish();
+        }
+        
     }
 
 }
