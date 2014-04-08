@@ -1,13 +1,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-	<!-- <item
-        android:id="@+id/action_add"
+	<item
+        android:id="@+id/action_date"
         android:showAsAction="always"
-        android:icon="@drawable/ic_action_new"
-        android:title="Add"/> -->
+        android:icon="@drawable/ic_action_event"
+        android:title="date"/>
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_logout"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="Settings"/>
+        android:title="@string/logout"/>
 
 </menu>

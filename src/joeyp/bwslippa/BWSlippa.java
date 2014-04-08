@@ -2,12 +2,14 @@ package joeyp.bwslippa;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import joeyp.bwslippa.ItemManager.OnItemDataChangedListener;
 import joeyp.bwslippa.RPCHelper.RPCListener;
 import joeyp.bwslippa.view.CalendarDialog;
+import joeyp.bwslippa.view.CalendarDialog.OnDateChangedListener;
 import joeyp.bwslippa.view.MessageDialog;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -92,6 +94,8 @@ public class BWSlippa extends Activity implements OnItemDataChangedListener,
     private CharSequence mTitle;
     private CalendarDialog mDatePicker;
     
+    private Account mCurrentAccount;
+    
     private class AuthTask implements Runnable {
 		
 		Account mAccount;
@@ -109,6 +113,7 @@ public class BWSlippa extends Activity implements OnItemDataChangedListener,
 				Intent intent = (Intent)bundle.get(AccountManager.KEY_INTENT);
 				if(intent != null) {
                     //permission required
+					//FIXME use startActivityForResult
 					onInitFailed(-1);
 					startActivity(intent);
 					return;
@@ -130,6 +135,40 @@ public class BWSlippa extends Activity implements OnItemDataChangedListener,
 				});
 		        
 			} catch (OperationCanceledException e) {
+				e.printStackTrace();
+			} catch (AuthenticatorException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+    
+    private class LogoutTask implements Runnable {
+    	Account mAccount;
+		AccountManager mAccountManager;
+		
+		LogoutTask(AccountManager manager, Account account) {
+			mAccountManager = manager;
+			mAccount = account;
+		}
+
+		@Override
+		public void run() {
+			AccountManagerFuture<Bundle> amf = mAccountManager.getAuthToken(mAccount, "ah", null, false, null, null);
+			Bundle bundle;
+			try {
+				bundle = amf.getResult();
+				String temp_token = bundle.getString(AccountManager.KEY_AUTHTOKEN);
+				mAccountManager.invalidateAuthToken(mAccount.type, temp_token);
+				runOnUiThread(new Runnable() {
+					
+					@Override
+					public void run() {
+						onLogout();	
+					}
+				});
+			} catch (OperationCanceledException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (AuthenticatorException e) {
@@ -140,7 +179,8 @@ public class BWSlippa extends Activity implements OnItemDataChangedListener,
 				e.printStackTrace();
 			}
 		}
-	}
+		
+    }
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -157,7 +197,9 @@ public class BWSlippa extends Activity implements OnItemDataChangedListener,
 				AccountManager accountManager = AccountManager.get(getApplicationContext());
 				Worker.get().post(new AuthTask(accountManager, account));
 				setPrimaryAccount(this, account);
-			}
+				mCurrentAccount = account;
+			} else 
+				loadDefaultAccount();
 		} else {
 			loadDefaultAccount();
 		}
@@ -230,7 +272,13 @@ public class BWSlippa extends Activity implements OnItemDataChangedListener,
         im.setFilter(reserved);
         
         mDatePicker = new CalendarDialog();
-        
+        mDatePicker.setOnDateChangedListener(new OnDateChangedListener() {
+			
+			@Override
+			public void onDateChanged(Date date) {
+				ItemManager.getInstance().setDate(date);
+			}
+		});
         loadFragment();
 	}
 
@@ -264,7 +312,7 @@ public class BWSlippa extends Activity implements OnItemDataChangedListener,
     public boolean onPrepareOptionsMenu(Menu menu) {
         // If the nav drawer is open, hide action items related to the content view
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-        menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
+//        menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
         return super.onPrepareOptionsMenu(menu);
     }
 	
@@ -277,23 +325,11 @@ public class BWSlippa extends Activity implements OnItemDataChangedListener,
         }
         // Handle action buttons
         switch(item.getItemId()) {
-        case 1:
-        	
-//        case R.id.action_add:
-//        	Intent intent = new Intent();
-//        	intent.setClass(BWSlippa.this, BookingActivity.class);
-//        	startActivity(intent);
-//        	return true;
-//        case R.id.action_date:
-//        	mDatePicker.show(getFragmentManager(), "datePicker");
-//        	AlertDialog.Builder builder = new AlertDialog.Builder(BWSlippa.this);
-//        	LayoutInflater inflater = getLayoutInflater();
-//        	View v = inflater.inflate(R.layout.date_picker, null);
-//        	builder.setView(v)
-//        	       .setTitle("test");
-//
-//        	AlertDialog dialog = builder.create();
-//        	dialog.show();
+        case R.id.action_date:
+        	mDatePicker.show(getFragmentManager(), "datepicker");
+        	return true;
+        case R.id.action_logout:
+        	logout();
         	return true;
 //        case R.id.action_websearch:
 //            // create intent to perform web search for this planet
@@ -678,6 +714,26 @@ public class BWSlippa extends Activity implements OnItemDataChangedListener,
 		
 	}
 	
+	private void logout() {
+		if(mCurrentAccount == null)
+			return;
+		AccountManager accountManager = AccountManager.get(getApplicationContext());
+		Worker.get().post(new LogoutTask(accountManager, mCurrentAccount));
+	}
+	
+	private void onLogout() {
+		mCurrentAccount = null;
+		setPrimaryAccount(this, null);
+		startSignInActivity();
+	}
+	
+	private void startSignInActivity() {
+		Intent intent = new Intent();
+		intent.setClass(this, SignInActivity.class);
+		startActivity(intent);
+		finish();
+	}
+	
 	private void loadDefaultAccount() {
 		String accountName = getPrimaryAccountName(this);
 		if(accountName != null) {
@@ -686,6 +742,7 @@ public class BWSlippa extends Activity implements OnItemDataChangedListener,
 			for(Account account : accounts) {
 				if(account.name.equals(accountName)) {
 					Worker.get().post(new AuthTask(accountManager, account));
+					mCurrentAccount = account;
 					return;
 				}
 			}
@@ -693,16 +750,13 @@ public class BWSlippa extends Activity implements OnItemDataChangedListener,
 		
 		Log.i(TAG, "account not exists");
 		//acount not exists
-		Intent intent = new Intent();
-		intent.setClass(this, SignInActivity.class);
-		startActivity(intent);
-		finish();
+		startSignInActivity();
 	}
 	
 	public static void setPrimaryAccount(Context context, Account account) {
 		SharedPreferences settings = context.getSharedPreferences(PREFS_SETTINGS, Context.MODE_PRIVATE);
 		Editor editor = settings.edit();
-		editor.putString(KEY_PRIMARY_ACCOUNT, account.name);
+		editor.putString(KEY_PRIMARY_ACCOUNT, account == null ? null : account.name);
 		editor.apply();
 	}
 	
