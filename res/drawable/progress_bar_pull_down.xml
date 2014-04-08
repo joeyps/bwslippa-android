@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<clip xmlns:android="http://schemas.android.com/apk/res/android"
+    android:gravity="center"
+    android:clipOrientation="horizontal"
+    android:drawable="@drawable/progress_bar_pull_down_body" >
+</clip>
