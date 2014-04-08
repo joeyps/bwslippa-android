@@ -30,7 +30,7 @@
             android:layout_height="match_parent"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:gravity="center"
-            android:text="Pull to Refresh" />
+            android:text="@string/hint_pull_down" />
 
     </FrameLayout>
 
@@ -38,8 +38,8 @@
     <fr.castorflex.android.smoothprogressbar.SmoothProgressBar
         android:id="@+id/progress"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    style="@style/GNowProgressBar"
+    android:layout_height="4dp"
+    style="@style/GPlusProgressBar"
     android:progressDrawable="@drawable/progress_bar_pull_down" />
 
 </RelativeLayout>

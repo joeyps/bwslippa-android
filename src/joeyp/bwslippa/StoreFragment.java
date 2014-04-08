@@ -1,18 +1,11 @@
 package joeyp.bwslippa;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import joeyp.bwslippa.ItemManager.OnItemDataChangedListener;
-import joeyp.bwslippa.RPCHelper.RPCCallback;
-import joeyp.bwslippa.view.CalendarDialog.OnDateChangedListener;
+import joeyp.bwslippa.view.PullToRefreshListView;
+import joeyp.bwslippa.view.PullToRefreshListView.OnRefreshListener;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
@@ -24,18 +17,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
 public class StoreFragment extends Fragment implements
-								OnItemDataChangedListener {
+								OnItemDataChangedListener, OnRefreshListener {
 	
 	public static final int REQUEST_BOOKING = 1002;
 	
-	private ListView mList;
+	private PullToRefreshListView mList;
 	private ItemAdapter mAdapter;
 	
 	@Override
@@ -43,7 +33,8 @@ public class StoreFragment extends Fragment implements
             Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.store, container, false);
         
-        mList = (ListView) rootView.findViewById(R.id.list);
+        mList = (PullToRefreshListView) rootView.findViewById(R.id.list);
+        mList.setOnRefreshListener(this);
 //        mList.setOnItemClickListener(new OnItemClickListener() {
 //
 //			@Override
@@ -69,7 +60,7 @@ public class StoreFragment extends Fragment implements
 		super.onActivityResult(requestCode, resultCode, data);
 		if(requestCode == REQUEST_BOOKING) {
 			if(resultCode == Activity.RESULT_OK) {
-				ItemManager.getInstance().notifyDataUpdated();
+				ItemManager.getInstance().sync();
 			}
 		}
 	}
@@ -179,11 +170,23 @@ public class StoreFragment extends Fragment implements
 		}
 		
 	}
+	
+	@Override
+	public void onSyncStarted() {
+		mList.startRefresh();
+	}
 
 	@Override
 	public void onItemDataChanged(List<ItemDetail> items) {
 		mAdapter.setData(items);
 		mAdapter.notifyDataSetChanged();
+		
+		mList.setRefreshComplete();
+	}
+
+	@Override
+	public void onRefresh() {
+		ItemManager.getInstance().sync();
 	}
 	
 }

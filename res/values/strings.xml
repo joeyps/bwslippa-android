@@ -24,6 +24,8 @@
     <string name="reserve">Reserve</string>
     <string name="cancel">Cancel</string>
     <string name="send">Send</string>
+    <string name="login">Log in</string>
+    <string name="logout">Log out</string>
     <!-- tag  -->
     <string name="tag_all">All</string>
     <string name="tag_reserved">Reserved</string>
@@ -39,4 +41,7 @@
     <string name="customer_phone">Phone</string>
     <!-- search -->
     <string name="hint_name_n_phone">Name or Phone</string>
+   	<!-- pull down -->
+   	<string name="hint_pull_down">Swipe down to refresh</string>
+   	<string name="hint_refreshing">Refreshing&#8230;</string>
 </resources>

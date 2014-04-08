@@ -32,6 +32,7 @@ public class ItemManager {
 	private Set<OnItemDataChangedListener> mListeners;
 	
 	public interface OnItemDataChangedListener {
+		public void onSyncStarted();
 		public void onItemDataChanged(List<ItemDetail> items);
 	}
 	
@@ -45,7 +46,6 @@ public class ItemManager {
 		mDate = cal.getTime();
 		
 		mFilter = new ItemFilter(ItemFilter.TAG_RESERVED, null);
-		init();
 	}
 	
 	public static ItemManager getInstance() {
@@ -169,7 +169,7 @@ public class ItemManager {
 		init();
 	}
 	
-	public void notifyDataUpdated() {
+	public void sync() {
 		query();
 	}
 	
@@ -195,6 +195,7 @@ public class ItemManager {
 							d.reservations.add(info);
 						}
 					}
+					
 					mHandler.post(new Runnable() {
 
 						@Override

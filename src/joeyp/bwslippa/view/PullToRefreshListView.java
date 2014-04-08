@@ -20,7 +20,7 @@ import android.widget.ListView;
 
 public class PullToRefreshListView extends ListView {
 	
-	private static final boolean DEBUG = true;
+	private static final boolean DEBUG = false;
     private static final String LOG_TAG = "PullToRefreshListView";
 	
 	private static final float DEFAULT_REFRESH_SCROLL_DISTANCE = 0.5f;
@@ -34,6 +34,11 @@ public class PullToRefreshListView extends ListView {
 	
 	private View mHeaderView;
 	private SmoothProgressBar mProgressBar;
+	private OnRefreshListener mListener;
+	
+	public interface OnRefreshListener {
+		public void onRefresh();
+	}
 
 	public PullToRefreshListView(Context context) {
 		super(context);
@@ -189,13 +194,17 @@ public class PullToRefreshListView extends ListView {
 	}
 	
 	protected void onRefresh() {
-		postDelayed(new Runnable() {
-			
-			@Override
-			public void run() {
-				onRefreshCompleted();
-			}
-		}, 3000);
+		if(mListener != null) {
+			mListener.onRefresh();
+		} else {
+			postDelayed(new Runnable() {
+				
+				@Override
+				public void run() {
+					onRefreshCompleted();
+				}
+			}, 3000);
+		}
 	}
 	
 	public void setRefreshComplete() {
@@ -218,4 +227,7 @@ public class PullToRefreshListView extends ListView {
 		mHeaderView.setVisibility(View.GONE);
 	}
 
+	public void setOnRefreshListener(OnRefreshListener listener) {
+		mListener = listener;
+	}
 }

@@ -2,20 +2,13 @@ package joeyp.bwslippa;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import joeyp.bwslippa.ItemManager.OnItemDataChangedListener;
-import joeyp.bwslippa.RPCHelper.RPCCallback;
 import joeyp.bwslippa.RPCHelper.RPCListener;
 import joeyp.bwslippa.view.CalendarDialog;
 import joeyp.bwslippa.view.MessageDialog;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -26,19 +19,12 @@ import android.accounts.AccountManager;
 import android.accounts.AccountManagerFuture;
 import android.accounts.AuthenticatorException;
 import android.accounts.OperationCanceledException;
-import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.ActionBar.OnNavigationListener;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.DatePickerDialog;
-import android.app.DatePickerDialog.OnDateSetListener;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -59,10 +45,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.CalendarView;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -108,8 +91,6 @@ public class BWSlippa extends Activity implements OnItemDataChangedListener,
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
     private CalendarDialog mDatePicker;
-    
-    private List<TagInfo> mTags;
     
     private class AuthTask implements Runnable {
 		
@@ -171,7 +152,6 @@ public class BWSlippa extends Activity implements OnItemDataChangedListener,
 		
 		Bundle bundle = getIntent().getExtras();
 		if(bundle != null) {
-			Log.d("joey", "select account");
 			Account account = bundle.getParcelable(EXTRA_ACCOUNT);
 			if(account != null) {
 				AccountManager accountManager = AccountManager.get(getApplicationContext());
@@ -179,7 +159,6 @@ public class BWSlippa extends Activity implements OnItemDataChangedListener,
 				setPrimaryAccount(this, account);
 			}
 		} else {
-			Log.d("joey", "load default account");
 			loadDefaultAccount();
 		}
 		
@@ -215,7 +194,7 @@ public class BWSlippa extends Activity implements OnItemDataChangedListener,
         Resources res = getResources();
         mSpinnerAdapter = new SpinnerAdapter(this);
         List<ItemFilter> data = new ArrayList<ItemFilter>();
-		data.add(new ItemFilter(ItemFilter.TAG_ALL, res.getString(R.string.tag_all)));
+        ItemFilter reserved = new ItemFilter(ItemFilter.TAG_RESERVED, res.getString(R.string.tag_reserved));
 		data.add(new ItemFilter(ItemFilter.TAG_RESERVED, res.getString(R.string.tag_reserved)));
 		data.add(new ItemFilter(ItemFilter.TAG_AVAILABLE, res.getString(R.string.tag_available)));
 		mSpinnerAdapter.setData(data);
@@ -246,10 +225,9 @@ public class BWSlippa extends Activity implements OnItemDataChangedListener,
 //            selectItem(0);
         }
         
-        mTags = new ArrayList<TagInfo>();
-        
         ItemManager im = ItemManager.getInstance();
         im.registerListener(this);
+        im.setFilter(reserved);
         
         mDatePicker = new CalendarDialog();
         
@@ -588,6 +566,11 @@ public class BWSlippa extends Activity implements OnItemDataChangedListener,
 			tv.setText(mData.get(position).name);
 			return tv;
 		}
+		
+	}
+    
+	@Override
+	public void onSyncStarted() {
 		
 	}
 

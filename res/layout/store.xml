@@ -1,4 +1,4 @@
-<ListView xmlns:android="http://schemas.android.com/apk/res/android"
+<joeyp.bwslippa.view.PullToRefreshListView xmlns:android="http://schemas.android.com/apk/res/android"
 	    android:id="@+id/list"
 	    android:layout_width="match_parent"
     	android:layout_height="match_parent"
@@ -7,4 +7,4 @@
     	android:dividerHeight="@dimen/m3"
     	android:padding="@dimen/m3" >
 	    
-	</ListView>
+	</joeyp.bwslippa.view.PullToRefreshListView>
