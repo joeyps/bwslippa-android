@@ -121,6 +121,8 @@ public class ItemManager {
 			@Override
 			public void onCallback(JSONObject jObj) {
 				try {
+					mTags.clear();
+					mItems.clear();
 					final List<ReservedInfo> data = new ArrayList<ReservedInfo>();
 					JSONArray jAry = jObj.getJSONArray("result");
 					for(int i = 0; i < jAry.length(); i++) {
