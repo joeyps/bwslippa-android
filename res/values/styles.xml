@@ -30,6 +30,12 @@
         <item name="android:textColor">#ffffffff</item>
     </style>
     
+    <style name="EmptyView">
+		<item name="android:textColor">@color/text_secondary_light</item>
+        <item name="android:textSize">@dimen/list_primary_m</item>
+        <item name="android:gravity">center</item>
+    </style>
+    
     <style name="Button">
 		<item name="android:background">@drawable/bg_main_button</item>
     </style>

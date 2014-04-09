@@ -3,4 +3,8 @@
    <solid android:color="#ffffff" />
    <stroke android:width="1dip" android:color="#4fa5d5"/>
    <corners android:radius="2dp" />
+   <padding android:bottom="@dimen/m3" 
+       		android:left="@dimen/m3" 
+       		android:right="@dimen/m3" 
+       		android:top="@dimen/m3" />
 </shape>

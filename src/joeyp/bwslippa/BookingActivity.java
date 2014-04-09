@@ -83,7 +83,7 @@ public class BookingActivity extends Activity {
 						mDateFrom.setDate(date);
 					}
 				});
-				mDatePicker.setDate(ItemManager.getInstance().getDate());
+				mDatePicker.setDate(mDateFrom.getDate());
 				mDatePicker.show(getFragmentManager(), "DatePicker");
 			}
 		});
@@ -99,7 +99,7 @@ public class BookingActivity extends Activity {
 						mDateTo.setDate(date);
 					}
 				});
-				mDatePicker.setDate(ItemManager.getInstance().getDate());
+				mDatePicker.setDate(mDateTo.getDate());
 				mDatePicker.show(getFragmentManager(), "DatePicker");
 			}
 		});

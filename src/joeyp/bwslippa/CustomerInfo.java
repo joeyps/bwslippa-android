@@ -8,7 +8,7 @@ public class CustomerInfo extends DBInfo {
 	public String name;
 	public String phone;
 	
-	private CustomerInfo() {
+	public CustomerInfo() {
 		
 	}
 	

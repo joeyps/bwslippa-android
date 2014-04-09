@@ -3,17 +3,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-	<EditText
-	    android:id="@+id/text_pattern"
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:hint="@string/hint_name_n_phone">
-	    
-	</EditText>
 	<ListView 
 	    android:id="@+id/list"
 	    android:layout_width="match_parent"
-	    android:layout_height="0dip"
-	    android:layout_weight="1"></ListView>
-
+	    android:layout_height="match_parent">
+	    
+	</ListView>
+	<TextView 
+	    android:id="@+id/empty"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    style="@style/EmptyView"
+		android:text="@string/hint_name_add_or_phone"
+		android:visibility="gone"
+	    />
 </LinearLayout>

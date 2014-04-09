@@ -103,7 +103,7 @@ public class SignInActivity extends Activity implements OnItemClickListener {
 			if(convertView == null) {
 				LayoutInflater inflater = (LayoutInflater) mContext
 				        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				tv = (TextView) inflater.inflate(R.layout.account_list_item, parent, false);
+				tv = (TextView) inflater.inflate(R.layout.list_item_1_line, parent, false);
 			} else
 				tv = (TextView) convertView;
 			if(position == (getCount() -1)) {

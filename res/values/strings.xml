@@ -41,6 +41,8 @@
     <string name="customer_phone">Phone</string>
     <!-- search -->
     <string name="hint_name_n_phone">Name or Phone</string>
+    <string name="hint_name_add_or_phone">Add or select a customer</string>
+    <string name="add_customer">Add \"%s\"</string>
    	<!-- pull down -->
    	<string name="hint_pull_down">Swipe down to refresh</string>
    	<string name="hint_refreshing">Refreshing&#8230;</string>
