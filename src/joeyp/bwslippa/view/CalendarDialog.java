@@ -13,6 +13,8 @@ import android.widget.DatePicker;
 public class CalendarDialog extends DialogFragment implements OnDateSetListener {
 	
 	private OnDateChangedListener mListener;
+	private DatePickerDialog mDatePicker;
+	private Date mDate;
 	
 	public static interface OnDateChangedListener {
 		public void onDateChanged(Date date);
@@ -27,7 +29,10 @@ public class CalendarDialog extends DialogFragment implements OnDateSetListener 
         int day = c.get(Calendar.DAY_OF_MONTH);
 
         // Create a new instance of DatePickerDialog and return it
-        return new DatePickerDialog(getActivity(), this, year, month, day);
+        mDatePicker = new DatePickerDialog(getActivity(), this, year, month, day);
+        if(mDate != null)
+        	setDate(mDate);
+        return mDatePicker;
     }
 
 	@Override
@@ -40,5 +45,18 @@ public class CalendarDialog extends DialogFragment implements OnDateSetListener 
 	
 	public void setOnDateChangedListener(OnDateChangedListener listener) {
 		mListener = listener;
+	}
+	
+	public void setDate(Date date) {
+		mDate = date;
+		if(mDatePicker == null)
+			return;
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		DatePicker picker = mDatePicker.getDatePicker();
+		int year = calendar.get(Calendar.YEAR);
+		int month = calendar.get(Calendar.MONTH);
+		int day = calendar.get(Calendar.DAY_OF_MONTH);
+		picker.updateDate(year, month, day);
 	}
 }

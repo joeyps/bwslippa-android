@@ -10,10 +10,12 @@ import joeyp.bwslippa.view.CalendarDialog;
 import joeyp.bwslippa.view.DateTimeView;
 import joeyp.bwslippa.view.CalendarDialog.OnDateChangedListener;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -39,10 +41,13 @@ public class BookingActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.booking);
-		
+	    
 		Bundle extra = getIntent().getExtras();
 		if(extra == null)
 			finish();
+		
+		ActionBar actionBar = getActionBar();
+	    actionBar.setDisplayHomeAsUpEnabled(true);
 		
 		Resources res = getResources();
 		
@@ -78,6 +83,7 @@ public class BookingActivity extends Activity {
 						mDateFrom.setDate(date);
 					}
 				});
+				mDatePicker.setDate(ItemManager.getInstance().getDate());
 				mDatePicker.show(getFragmentManager(), "DatePicker");
 			}
 		});
@@ -93,6 +99,7 @@ public class BookingActivity extends Activity {
 						mDateTo.setDate(date);
 					}
 				});
+				mDatePicker.setDate(ItemManager.getInstance().getDate());
 				mDatePicker.show(getFragmentManager(), "DatePicker");
 			}
 		});
@@ -185,6 +192,17 @@ public class BookingActivity extends Activity {
 				mCustomerKey = data.getStringExtra(BWSlippa.EXTRA_CUSTOMER_KEY);
 			}
 		}
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	   switch (item.getItemId()) {
+	     case android.R.id.home:
+	        finish();
+	        return true;
+	     default:
+	        return super.onOptionsItemSelected(item);
+	   }
 	}
 	
 	private void setPersonCount(int count) {
