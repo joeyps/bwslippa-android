@@ -12,7 +12,10 @@
     <dimen name="m6">2dp</dimen>
     
     <dimen name="list_item_height">63dp</dimen>
-    <dimen name="list_primary_s">18sp</dimen>
-    <dimen name="list_primary_m">19sp</dimen>
-    <dimen name="list_secondary_s">14sp</dimen>
+    <dimen name="text_xxs">13sp</dimen>
+    <dimen name="text_xs">14sp</dimen>
+    <dimen name="text_s">18sp</dimen>
+    <dimen name="text_m">19sp</dimen>
+    <dimen name="text_h1">40sp</dimen>
+    <dimen name="text_h2">30sp</dimen>
 </resources>

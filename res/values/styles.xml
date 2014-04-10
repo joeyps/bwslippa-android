@@ -32,7 +32,7 @@
     
     <style name="EmptyView">
 		<item name="android:textColor">@color/text_secondary_light</item>
-        <item name="android:textSize">@dimen/list_primary_m</item>
+        <item name="android:textSize">@dimen/text_m</item>
         <item name="android:gravity">center</item>
     </style>
     
@@ -42,7 +42,7 @@
     
     <style name="ListItemPrimaryText" parent="@android:style/TextAppearance">
         <item name="android:textColor">#ff000000</item>
-        <item name="android:textSize">@dimen/list_primary_s</item>
+        <item name="android:textSize">@dimen/text_s</item>
     </style>
     
     <style name="ProgressBar.Horizontal" parent="@android:style/Widget.ProgressBar.Horizontal">

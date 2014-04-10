@@ -34,6 +34,7 @@ public class BookingActivity extends Activity {
 	private TextView mCustomerName;
 	private EditText mCustomerPhone;
 	private TextView mNumberOfPerson;
+	private String mFormatHowManyPerson;
 	
 	private CalendarDialog mDatePicker;
 
@@ -51,6 +52,8 @@ public class BookingActivity extends Activity {
 		
 		Resources res = getResources();
 		
+		mFormatHowManyPerson = getString(R.string.how_many_person);
+		
 		mItemKey = extra.getString(BWSlippa.EXTRA_ITEM_KEY);
 		TextView txtItemName = (TextView) findViewById(R.id.text_item_name);
 		String itemName = String.format(res.getString(R.string.reserve_item), extra.getString(BWSlippa.EXTRA_ITEM_NAME)); 
@@ -63,7 +66,7 @@ public class BookingActivity extends Activity {
 		Button btnIncrease = (Button) findViewById(R.id.button_increase);
 		Button btnDecrease = (Button) findViewById(R.id.button_decrease);
 		mNumberOfPerson = (TextView) findViewById(R.id.text_person_count);
-		
+		setPersonCount(mPersonCount);
 		mDatePicker = new CalendarDialog();
 		
 		mDateFrom = (DateTimeView) findViewById(R.id.date_start);
@@ -208,7 +211,7 @@ public class BookingActivity extends Activity {
 	private void setPersonCount(int count) {
 		count = Math.max(1, count);
 		mPersonCount = count;
-		mNumberOfPerson.setText(String.format("%d person", mPersonCount));
+		mNumberOfPerson.setText(String.format(mFormatHowManyPerson, mPersonCount));
 	}
 	
 	

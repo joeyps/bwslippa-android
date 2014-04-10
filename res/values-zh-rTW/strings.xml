@@ -45,7 +45,7 @@
     <string name="customer_name">姓名</string>
     <string name="customer_phone">聯絡電話</string>
     <!-- search -->
-    <string name="hint_name_n_phone">搜尋姓名或電話</string>
+    <string name="hint_name_n_phone">輸入姓名或電話</string>
     <string name="hint_name_add_or_phone">新增或選擇一位客戶</string>
     <string name="add_customer">新增 \"%s\"</string>
     <!-- pull down -->

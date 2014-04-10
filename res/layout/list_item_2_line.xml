@@ -27,7 +27,7 @@
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
 	    android:textAppearance="?android:attr/textAppearanceListItemSmall"
-	    android:textSize="@dimen/list_primary_m"
+	    android:textSize="@dimen/text_m"
 	    android:textColor="@color/text_light"
 	    android:background="?android:attr/activatedBackgroundIndicator"
 	    />
@@ -36,7 +36,7 @@
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
 	    android:textAppearance="?android:attr/textAppearanceListItemSmall"
-	    android:textSize="@dimen/list_primary_s"
+	    android:textSize="@dimen/text_s"
 	    android:textColor="@color/text_secondary_light"
 	    android:background="?android:attr/activatedBackgroundIndicator"
 	    />

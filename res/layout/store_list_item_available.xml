@@ -15,14 +15,14 @@
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
 	        android:textColor="#ff000000"
-	        android:textSize="@dimen/list_primary_s"
+	        android:textSize="@dimen/text_s"
 	        android:text="501" />
 	    <TextView
 	        android:id="@+id/text_customer_name"
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
 	        android:textColor="#ff000000"
-	        android:textSize="@dimen/list_primary_m"
+	        android:textSize="@dimen/text_m"
 	        android:text="Person 1"
 	        android:layout_marginLeft="@dimen/m1" />
     </LinearLayout>
@@ -49,7 +49,7 @@
     		android:gravity="center_vertical"
     		android:background="@android:color/transparent"
     		android:textColor="@color/main_color"
-    		android:textSize="@dimen/list_primary_m"
+    		android:textSize="@dimen/text_m"
     		android:text="@string/reserve">
     	</TextView>
 	</LinearLayout>    

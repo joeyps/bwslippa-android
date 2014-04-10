@@ -277,6 +277,7 @@ public class BWSlippa extends Activity implements OnItemDataChangedListener,
 			@Override
 			public void onDateChanged(Date date) {
 				ItemManager.getInstance().setDate(date);
+				mSpinnerAdapter.notifyDataSetChanged();
 			}
 		});
         loadFragment();
@@ -689,15 +690,18 @@ public class BWSlippa extends Activity implements OnItemDataChangedListener,
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-			TextView tv;
+			View v;
 			if(convertView == null) {
 				LayoutInflater inflater = (LayoutInflater) mContext
 				        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				tv = (TextView) inflater.inflate(R.layout.spinner, parent, false);
+				v = inflater.inflate(R.layout.spinner, parent, false);
 			} else
-				tv = (TextView) convertView;
-			tv.setText(mData.get(position).name);
-			return tv;
+				v = convertView;
+			TextView textPrimary = (TextView) v.findViewById(R.id.text_primary);
+			textPrimary.setText(Settings.getSettingsDateFormat(mContext, true).format(ItemManager.getInstance().getDate()));
+			TextView textSecondary = (TextView) v.findViewById(R.id.text_secondary);
+			textSecondary.setText(mData.get(position).name);
+			return v;
 		}
 		
 		@Override

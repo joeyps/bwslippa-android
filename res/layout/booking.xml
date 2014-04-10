@@ -51,6 +51,7 @@
 			    android:id="@+id/button_decrease"
 			    android:layout_width="wrap_content"
 			    android:layout_height="wrap_content"
+			    android:textSize="@dimen/text_h2"
 			    android:text="-" />
 			<TextView 
 			    android:id="@+id/text_person_count"
@@ -58,11 +59,13 @@
 			    android:layout_height="wrap_content"
 			    android:layout_weight="1"
 			    android:gravity="center"
+			    android:textSize="@dimen/text_m"
 			    android:text="1 person"/>
 			<Button 
 			    android:id="@+id/button_increase"
 			    android:layout_width="wrap_content"
 			    android:layout_height="wrap_content"
+			    android:textSize="@dimen/text_h2"
 			    android:text="+"/>
 		</LinearLayout>
 		<LinearLayout 
@@ -76,7 +79,7 @@
 			    android:layout_width="0dip"
 			    android:layout_height="wrap_content"
 			    android:textSize="30dp"
-			    android:text="@string/customer_name"
+			    android:hint="@string/customer_name"
 			    android:layout_weight="1" />
 			<ImageButton 
 			    android:id="@+id/button_find_customer"

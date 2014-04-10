@@ -25,4 +25,5 @@
 	style="@style/ListItemPrimaryText"
     android:background="?android:attr/activatedBackgroundIndicator"
     android:minHeight="@dimen/list_item_height"
+    android:textSize="@dimen/text_m"
     android:text="Sample"/>
