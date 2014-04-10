@@ -186,6 +186,7 @@ public class ItemManager {
 			@Override
 			public void onCallback(JSONObject jObj) {
 				try {
+					clearAllReservation();
 					String date = jObj.getString("date");
 					JSONArray jAry = jObj.getJSONArray("result");
 					for(int i = 0; i < jAry.length(); i++) {
@@ -237,6 +238,12 @@ public class ItemManager {
 			}
 		}
 		return null;
+	}
+	
+	private void clearAllReservation() {
+		for(ItemDetail d : mItems) {
+			d.reservations.clear();
+		}
 	}
 	
 	private void notifyAllListeners() {
