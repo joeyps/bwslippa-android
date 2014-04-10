@@ -37,10 +37,11 @@
 
     <fr.castorflex.android.smoothprogressbar.SmoothProgressBar
         android:id="@+id/progress"
-    android:layout_width="match_parent"
-    android:layout_height="4dp"
-    style="@style/GPlusProgressBar"
-    android:progressDrawable="@drawable/progress_bar_pull_down" />
+	    android:layout_width="match_parent"
+	    android:layout_height="4dp"
+	    style="@style/GPlusProgressBar"
+	    android:progressDrawable="@drawable/progress_bar_pull_down"
+	    android:layout_marginTop="44dp" />
 
 </RelativeLayout>
 

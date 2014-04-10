@@ -23,11 +23,12 @@ public class PullToRefreshListView extends ListView {
 	private static final boolean DEBUG = false;
     private static final String LOG_TAG = "PullToRefreshListView";
 	
-	private static final float DEFAULT_REFRESH_SCROLL_DISTANCE = 0.5f;
+	private static final float DEFAULT_REFRESH_SCROLL_DISTANCE = 10f;
 	
 	private int mTouchSlop;
 	private boolean mIsBeingDragged = false;
 	private boolean mIsRefreshing = false;
+	private boolean mHandlingTouchEventFromDown = false;
 	private float mInititalX = -1;
 	private float mInititalY = -1;
 	private float mPullBeginY = -1;
@@ -110,8 +111,12 @@ public class PullToRefreshListView extends ListView {
         });
 	}
 	
-	@Override
-    public boolean onTouchEvent(MotionEvent ev) {
+	public boolean onInterceptTouchEvent (MotionEvent ev) {
+//		Log.d(LOG_TAG, "onInterceptTouchEvent=" + ev.getAction());
+		
+		if(mIsRefreshing)
+			return super.onInterceptTouchEvent(ev);
+		
 		final float x = ev.getX();
 		final float y = ev.getY();
 		
@@ -121,14 +126,9 @@ public class PullToRefreshListView extends ListView {
 	        	mInititalX = x;
 	        	mInititalY = y;
         	}
-            break;
-        
+        	break;
         case MotionEvent.ACTION_MOVE:
-        	if(mIsRefreshing)
-        		break;
-            if(mIsBeingDragged) {
-            	onPull(y);
-            } else if(mInititalY > 0) {
+        	if(!mIsBeingDragged && mInititalY > 0) {
             	float diffX = Math.abs(x - mInititalX);
             	float diffY = y - mInititalY;
             	if(diffY > diffX && diffY > mTouchSlop) {
@@ -136,6 +136,55 @@ public class PullToRefreshListView extends ListView {
             	} else if (diffY < -mTouchSlop) {
             		resetPullState();
             	}
+            }
+            break;
+        case MotionEvent.ACTION_CANCEL:
+        case MotionEvent.ACTION_UP:
+        	if(mIsBeingDragged && !mIsRefreshing)
+        		resetPullState();
+        	break;
+		}
+		
+		if(mIsBeingDragged)
+			return mIsBeingDragged;
+		
+		return super.onInterceptTouchEvent(ev);
+	}
+	
+	@Override
+    public boolean onTouchEvent(MotionEvent ev) {
+//		Log.d(LOG_TAG, "onTouchEvent=" + ev.getAction());
+		final float x = ev.getX();
+		final float y = ev.getY();
+		
+		if(mIsRefreshing)
+			return super.onTouchEvent(ev);
+		
+		// Record whether our handling is started from ACTION_DOWN
+        if (ev.getAction() == MotionEvent.ACTION_DOWN && isReadyForPull()) {
+            mHandlingTouchEventFromDown = true;
+        }
+
+        // If we're being called from ACTION_DOWN then we must call through to
+        // onInterceptTouchEvent until it sets mIsBeingDragged
+        if (mHandlingTouchEventFromDown && !mIsBeingDragged) {
+        	Log.d(LOG_TAG, "from onTouchEvent=" + ev.getAction());
+        	onInterceptTouchEvent(ev);
+            return true;
+        }
+		
+		switch (ev.getAction()) {
+        case MotionEvent.ACTION_DOWN:
+            break;
+        
+        case MotionEvent.ACTION_MOVE:
+        	if(mIsRefreshing)
+        		break;
+        	float diffY = y - mInititalY;
+            if(mIsBeingDragged && diffY > -mTouchSlop) {
+            	onPull(y);
+            } else {
+            	resetPullState();
             }
             break;
         case MotionEvent.ACTION_UP:
@@ -171,7 +220,7 @@ public class PullToRefreshListView extends ListView {
 	private void onPull(float y) {
 		float diffY = y - mPullBeginY;
 		
-		float pxScrollForRefresh = getHeight() * DEFAULT_REFRESH_SCROLL_DISTANCE;
+		float pxScrollForRefresh = mTouchSlop * DEFAULT_REFRESH_SCROLL_DISTANCE;
 		Log.d(LOG_TAG, "onPull d=" + diffY + " pxScrollForRefresh=" + pxScrollForRefresh);
 		if(diffY > pxScrollForRefresh) {
 			onRefreshStarted();
@@ -221,6 +270,7 @@ public class PullToRefreshListView extends ListView {
 			return;
 		mIsBeingDragged = false;
 		mIsRefreshing = false;
+		mHandlingTouchEventFromDown = false;
 		mInititalX = mInititalY = mPullBeginY = -1;
 		mProgressBar.setProgress(0);
 		mProgressBar.setIndeterminate(false);
