@@ -23,7 +23,7 @@
 	        android:layout_height="wrap_content"
 	        android:textColor="#ff000000"
 	        android:textSize="@dimen/text_m"
-	        android:text="Person 1"
+	        android:hint="@string/item_available"
 	        android:layout_marginLeft="@dimen/m1" />
     </LinearLayout>
     <View 

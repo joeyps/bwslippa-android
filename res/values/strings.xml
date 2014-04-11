@@ -36,6 +36,7 @@
     <string name="check_in">Check in</string>
     <string name="check_out">Check out</string>
     <string name="how_many_person">%d Person</string>
+    <string name="item_available">Vacancy</string>
     <!-- info  -->
     <string name="customer_name">Name</string>
     <string name="customer_phone">Phone</string>

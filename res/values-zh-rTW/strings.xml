@@ -41,6 +41,7 @@
     <string name="check_in">從</string>
     <string name="check_out">到</string>
     <string name="how_many_person">%d 位客人</string>
+    <string name="item_available">尚無任何預約</string>
     <!-- info  -->
     <string name="customer_name">姓名</string>
     <string name="customer_phone">聯絡電話</string>
