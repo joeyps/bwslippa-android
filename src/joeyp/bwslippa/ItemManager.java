@@ -115,11 +115,13 @@ public class ItemManager {
 	}
 	
 	private void init() {
-		RPCHelper rpc = RPCHelper.getInstance();
-        rpc.call(RPCHelper.API_BIND_WORKSPACE, new RPCCallback() {
-
+		
+        Worker.get().post(new Runnable() {
+			
 			@Override
-			public void onCallback(JSONObject jObj) {
+			public void run() {
+				RPCHelper rpc = RPCHelper.getInstance();
+				JSONObject jObj = rpc.getJSONObject(RPCHelper.API_BIND_WORKSPACE);
 				try {
 					mTags.clear();
 					mItems.clear();
@@ -137,6 +139,7 @@ public class ItemManager {
 						}
 						mTags.add(info);
 					}
+					
 					mHandler.post(new Runnable() {
 
 						@Override
@@ -149,22 +152,9 @@ public class ItemManager {
 					
 				} catch (JSONException e) {
 					e.printStackTrace();
-				}
+				}	
 			}
-
-			@Override
-			public void onFail() {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void onCallback(JSONArray obj) {
-				// TODO Auto-generated method stub
-				
-			}
-        	
-        });
+		});
 	}
 	
 	public void forceSync() {

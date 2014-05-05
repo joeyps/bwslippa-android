@@ -6,12 +6,17 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -25,6 +30,7 @@ import org.apache.http.client.params.ClientPNames;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,10 +40,18 @@ import android.accounts.AccountManager;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Looper;
 import android.util.Log;
 
 public class RPCHelper {
+	
 	public static final String HOST = "https://bwslippa.appspot.com/";
+	
+	private static final String LOG_TAG = "RPC"; 
+	private static final String USER_AGENT = "Android";
+	private static final int REQUEST_TIMEOUT = 15000;
+	private static final String SACSID = "SACSID";
+	private static final String ACSID = "ACSID";
 	
 	//get
 	public static final String API_GET_ITEM_TAGS = "";
@@ -52,6 +66,7 @@ public class RPCHelper {
 	private Set<WeakReference<RPCListener>> mListener;
 	private Handler mWorker;
 	private HandlerThread mThread;
+	private String mToken;
 	
 	public class RPC implements Runnable {
 		
@@ -223,16 +238,6 @@ public class RPCHelper {
 			mListener.remove(refToRemove);
 	}
 	
-	public void call() {
-		try {
-			new AuthenticatedRequestTask().execute(String.format("%srpc?action=getReserved&arg0=%s", HOST, URLEncoder.encode("\"03/13/2014\"", "UTF-8")));
-			
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
 	public void call(String api, RPCCallback callback, Object... param) {
 		try {
 			StringBuilder sb = new StringBuilder();
@@ -276,15 +281,10 @@ public class RPCHelper {
 		jAry.put(api);
 		try {
 			for(Object obj : param) {
-//				if(obj instanceof String) {
-//					String p = URLEncoder.encode((String)obj, "UTF-8");
-//					jAry.put(p);
-//				} else {
-//					jAry.put(obj);
-//				}
 				jAry.put(obj);
 			}
-			StringEntity e = new StringEntity(jAry.toString());
+			
+			StringEntity e = new StringEntity(jAry.toString(), HTTP.UTF_8);
 			mWorker.post(new PostRPC(url, e, callback));
 		
 		} catch (UnsupportedEncodingException e) {
@@ -337,8 +337,14 @@ public class RPCHelper {
 	//                reader.close();
 	            Header[] headers = response.getHeaders("Set-Cookie");
 	            for(Cookie cookie : sHttpClient.getCookieStore().getCookies()) {
-	                if(cookie.getName().equals("ACSID") || cookie.getName().equals("SACSID")) {
-	                	UIHandler.get().post(new Runnable() {
+	            	if(cookie.getName().equals("ACSID"))
+	            		RPCHelper.this.mToken = cookie.getValue();
+	            	else if(cookie.getName().equals("SACSID")) {
+	            		RPCHelper.this.mToken = cookie.getValue();
+	                }
+	            	
+	            	if(RPCHelper.this.mToken != null) {
+	            		UIHandler.get().post(new Runnable() {
 
 	        				@Override
 	        				public void run() {
@@ -351,7 +357,7 @@ public class RPCHelper {
 	        	        	
 	        	        });
 	                	return;
-	                }
+	            	}
 	            }
 	        } catch (ClientProtocolException e) {
 	                e.printStackTrace();
@@ -380,39 +386,6 @@ public class RPCHelper {
 			}
 		}
 	}
-	
-	private class AuthenticatedRequestTask extends AsyncTask<String, Integer, String> {
-        @Override
-        protected String doInBackground(String... urls) {
-            try {
-            	
-        		String url = urls[0];
-                HttpGet http_get = new HttpGet(url);
-                HttpResponse response = sHttpClient.execute(http_get);
-                String result = EntityUtils.toString(response.getEntity());
-				JSONObject jObj = new JSONObject(result);
-				String date = jObj.getString("date");
-				JSONArray jAry = jObj.getJSONArray("result");
-				for(int i = 0; i < jAry.length(); i++) {
-					
-				}
-                return result;
-            } catch (ClientProtocolException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-            return null;
-        }
-        
-        protected void onPostExecute(String result) {
-               Log.d("joey", "content=" + result);
-        }
-
-    }
 	
 	public static Object wrap(Object object) {
         try {
@@ -458,4 +431,54 @@ public class RPCHelper {
             return null;
         }
     }
+	
+	public JSONObject getJSONObject(String api, Object... param) {
+		
+		if(Looper.myLooper() == Looper.getMainLooper())
+			throw new IllegalThreadStateException();
+		
+		HttpsURLConnection conn = null;
+		try {
+			StringBuilder sb = new StringBuilder();
+			for(int i = 0; i < param.length; i++) {
+				String p = wrap(param[i]).toString();
+				p = URLEncoder.encode(p, "UTF-8");
+				sb.append(String.format("&arg%d=%s", i, p));
+			}
+		
+			URL url = new URL(String.format("%srpc?action=%s%s", HOST, api, sb.toString()));
+			conn = (HttpsURLConnection) url.openConnection();
+			conn.setRequestMethod("GET");
+			conn.setConnectTimeout(REQUEST_TIMEOUT);
+			conn.setRequestProperty("User-Agent", USER_AGENT);
+			conn.setRequestProperty("Cookie", String.format("%s=%s", SACSID, mToken));
+			conn.connect();
+			
+			int responseCode = conn.getResponseCode();
+			Log.i(LOG_TAG, "Sending 'GET' request to URL :" + url);
+			Log.i(LOG_TAG, "Response Code :" + responseCode);
+			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			String line;
+			StringBuffer response = new StringBuffer();
+	 
+			while ((line = br.readLine()) != null) {
+				response.append(line);
+			}
+			br.close();
+			return new JSONObject(response.toString());
+	 
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} finally {
+			if(conn != null)
+				conn.disconnect();
+		}
+		return null;
+	}
 }
