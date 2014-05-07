@@ -95,6 +95,8 @@ public class BWSlippa extends Activity implements OnItemDataChangedListener,
     private CalendarDialog mDatePicker;
     
     private Account mCurrentAccount;
+    private boolean mIsAuthing = false;
+    private boolean mIsAuthed = false;
     
     private class AuthTask implements Runnable {
 		
@@ -112,10 +114,8 @@ public class BWSlippa extends Activity implements OnItemDataChangedListener,
 				Bundle bundle = amf.getResult();
 				Intent intent = (Intent)bundle.get(AccountManager.KEY_INTENT);
 				if(intent != null) {
-                    //permission required
-					//FIXME use startActivityForResult
-					onInitFailed(-1);
 					startActivity(intent);
+					mIsAuthing = false;
 					return;
 				}
 				String temp_token = bundle.getString(AccountManager.KEY_AUTHTOKEN);
@@ -194,14 +194,9 @@ public class BWSlippa extends Activity implements OnItemDataChangedListener,
 		if(bundle != null) {
 			Account account = bundle.getParcelable(EXTRA_ACCOUNT);
 			if(account != null) {
-				AccountManager accountManager = AccountManager.get(getApplicationContext());
-				Worker.get().post(new AuthTask(accountManager, account));
 				setPrimaryAccount(this, account);
 				mCurrentAccount = account;
-			} else 
-				loadDefaultAccount();
-		} else {
-			loadDefaultAccount();
+			}
 		}
 		
 		// Check device for Play Services APK.
@@ -291,6 +286,7 @@ public class BWSlippa extends Activity implements OnItemDataChangedListener,
 	@Override
 	protected void onResume() {
 		super.onResume();
+		checkGoogleAuth();
 		checkPlayServices();
 	}
 	
@@ -365,6 +361,8 @@ public class BWSlippa extends Activity implements OnItemDataChangedListener,
     }
     
     private void onGetToken(String token) {
+    	mIsAuthing = false;
+    	mIsAuthed = true;
     	RPCHelper helper = RPCHelper.getInstance();
         helper.init(token);
     }
@@ -768,5 +766,12 @@ public class BWSlippa extends Activity implements OnItemDataChangedListener,
 	public static String getPrimaryAccountName(Context context) {
 		SharedPreferences settings = context.getSharedPreferences(PREFS_SETTINGS, Context.MODE_PRIVATE);
 		return settings.getString(KEY_PRIMARY_ACCOUNT, null);
+	}
+	
+	private void checkGoogleAuth() {
+		if(!mIsAuthing && !mIsAuthed) {
+			mIsAuthing = true;
+			loadDefaultAccount();
+		}
 	}
 }
