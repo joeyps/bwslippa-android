@@ -33,6 +33,7 @@ public class StoreFragment extends Fragment implements
         View rootView = inflater.inflate(R.layout.store, container, false);
         
         mList = (PullToRefreshListView) rootView.findViewById(R.id.list);
+        mList.setEmptyView(rootView.findViewById(R.id.empty));
         mList.setOnRefreshListener(this);
 //        mList.setOnItemClickListener(new OnItemClickListener() {
 //

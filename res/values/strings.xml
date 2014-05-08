@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">bwslippa</string>
+    <string name="app_name">BWSLIPPA</string>
     <string-array name="drawer_items">
         <item>All</item>
         <item>Available</item>
@@ -26,6 +26,7 @@
     <string name="send">Send</string>
     <string name="login">Log in</string>
     <string name="logout">Log out</string>
+    <string name="hint_no_data_found">No data found.</string>
     <!-- tag  -->
     <string name="tag_all">All</string>
     <string name="tag_reserved">Reserved</string>
