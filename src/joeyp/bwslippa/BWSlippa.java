@@ -324,7 +324,8 @@ public class BWSlippa extends Activity implements OnItemDataChangedListener,
         switch(item.getItemId()) {
         case R.id.action_date:
         	mDatePicker.setDate(ItemManager.getInstance().getDate());
-        	mDatePicker.show(getFragmentManager(), "datepicker");
+        	if(!mDatePicker.isAdded())
+        		mDatePicker.show(getFragmentManager(), "datepicker");
         	return true;
         case R.id.action_logout:
         	logout();
