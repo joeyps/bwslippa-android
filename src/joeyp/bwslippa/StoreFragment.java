@@ -12,7 +12,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -47,9 +46,9 @@ public class StoreFragment extends Fragment implements
 //				}
 //			}
 //		});
-        mAdapter = new ItemAdapter(getActivity());
+        mAdapter = new ItemAdapter(this);
         mList.setAdapter(mAdapter);
-        
+
         ItemManager im = ItemManager.getInstance();
         im.registerListener(this);
         return rootView;
@@ -66,9 +65,9 @@ public class StoreFragment extends Fragment implements
 	}
 	
 	private static class ViewHolder {
-	    public TextView text;
+		public TextView text;
 //	    public ImageView image;
-	  }
+	}
 	
 	private static class ItemAdapter extends BaseAdapter {
 		
@@ -76,11 +75,11 @@ public class StoreFragment extends Fragment implements
 		private static final int TYPE_RESERVED = 1;
 		private static final int TYPE_COUNT = 2;
 		
-		private Context mContext;
+		private Fragment mFragment;
 		private List<ItemDetail> mData;
 		
-		public ItemAdapter(Context context) {
-			mContext = context;
+		public ItemAdapter(Fragment fragment) {
+			mFragment = fragment;
 			mData = new ArrayList<ItemDetail>();
 		}
 		
@@ -121,7 +120,7 @@ public class StoreFragment extends Fragment implements
 			final ItemDetail d = mData.get(position);
 			int viewType = getItemViewType(position);
 			if(convertView == null) {
-				LayoutInflater inflater = (LayoutInflater) mContext
+				LayoutInflater inflater = (LayoutInflater) mFragment.getActivity()
 				        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				if(viewType == TYPE_AVAILABLE)
 					v = inflater.inflate(R.layout.store_list_item_available, parent, false);
@@ -147,7 +146,7 @@ public class StoreFragment extends Fragment implements
 						if(phone != null && !phone.isEmpty()) {
 							Intent intent = new Intent(Intent.ACTION_DIAL);          
 							intent.setData(Uri.parse("tel:"+phone));          
-							mContext.startActivity(intent); 
+							mFragment.startActivity(intent); 
 						}
 					}
 				});
@@ -158,11 +157,11 @@ public class StoreFragment extends Fragment implements
 					@Override
 					public void onClick(View v) {
 						Intent intent = new Intent();
-						intent.setClass(mContext, BookingActivity.class);
+						intent.setClass(mFragment.getActivity(), BookingActivity.class);
 						intent.putExtra(BWSlippa.EXTRA_ITEM_KEY, d.item.key);
 						intent.putExtra(BWSlippa.EXTRA_ITEM_NAME, d.item.name);
 						intent.putExtra(BWSlippa.EXTRA_START_DATE, ItemManager.getInstance().getDate());
-						((Activity)mContext).startActivityForResult(intent, REQUEST_BOOKING);	
+						mFragment.startActivityForResult(intent, REQUEST_BOOKING);	
 					}
 				});
 			}

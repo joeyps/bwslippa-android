@@ -15,6 +15,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -156,6 +157,7 @@ public class BookingActivity extends Activity {
 					@Override
 					public void onCallback(JSONObject obj) {
 						Toast.makeText(BookingActivity.this, "success", Toast.LENGTH_SHORT).show();
+						setResult(RESULT_OK, null);
 						finish();
 					}
 				}, true,
