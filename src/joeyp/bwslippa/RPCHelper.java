@@ -60,6 +60,7 @@ public class RPCHelper {
 	public static final String API_QUERY_CUSTOMER = "customer";
 	//post
 	public static final String API_RESERVE = "reserve";
+	public static final String API_SIGN_IN = "userSignIn";
 	
 	private static RPCHelper sHelper;
 	private static DefaultHttpClient sHttpClient;

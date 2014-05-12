@@ -6,7 +6,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import joeyp.bwslippa.ItemManager.OnItemDataChangedListener;
+import joeyp.bwslippa.RPCHelper.RPCCallback;
 import joeyp.bwslippa.RPCHelper.RPCListener;
 import joeyp.bwslippa.view.CalendarDialog;
 import joeyp.bwslippa.view.CalendarDialog.OnDateChangedListener;
@@ -628,6 +632,27 @@ public class BWSlippa extends Activity implements OnItemDataChangedListener,
 	@Override
 	public void onInit() {
 		Toast.makeText(this, "Welcome.", Toast.LENGTH_SHORT).show();
+		RPCHelper rpc = RPCHelper.getInstance();
+		rpc.post(RPCHelper.API_SIGN_IN, new RPCCallback() {
+			
+			@Override
+			public void onFail() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onCallback(JSONArray obj) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onCallback(JSONObject obj) {
+				// TODO Auto-generated method stub
+				
+			}
+		}, mCurrentAccount.name);
 		ItemManager.getInstance().forceSync();
 	}
 
